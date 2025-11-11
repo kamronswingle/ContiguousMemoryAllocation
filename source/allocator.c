@@ -10,24 +10,24 @@ int main(int argc, char *argv[]) {
     }
     
     int max_size = atoi(argv[1]); // define the max size from argument 1
-    initialize_memory(max_size);
+    initialize_memory(max_size); // initializing the memory (setting up the linked list)
     
     char command[100];
     char command_type[10];
 
-    while (1) {
+    while (1) { // main loop for CLI
         printf("allocator>");
 
-        if (fgets(command, sizeof(command), stdin) == NULL) {
+        if (fgets(command, sizeof(command), stdin) == NULL) { // if the user doesn't say anything and hits enter just break
             break;
         }
 
-        sscanf(command, "%s", command_type);
+        sscanf(command, "%s", command_type); // breaking up the command and the command type
 
-        if (strcmp(command_type, "X") == 0) {
+        if (strcmp(command_type, "X") == 0) { // quitting, just break the loop
             break;
         }
-        else if (strcmp(command_type, "RQ") == 0) {
+        else if (strcmp(command_type, "RQ") == 0) { // if the user types RQ, parse through and check if they properly used the command
             char process[10];
             int size;
             char strategy;
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
                 continue;
             }
 
-            request_memory(process, size, strategy);
+            request_memory(process, size, strategy); // if everything is right, request the memory (make a new item in the list)
         }
         else if (strcmp(command_type, "RL") == 0) {
             char process[10];
@@ -52,20 +52,20 @@ int main(int argc, char *argv[]) {
                 continue;
             }
 
-            release_memory(process);
+            release_memory(process); // deleting an item in the list (also merges adjacent holes to avoid swiss cheese empty blocks in memory)
         }
         else if (strcmp(command_type, "C") == 0) {
-            compact_memory(max_size);
+            compact_memory(max_size); // compaction
         }
         else if (strcmp(command_type, "STAT") == 0) {
             char flag[10] = "";
             sscanf(command, "STAT %s", flag);
             
-            if (strcmp(flag, "-v") == 0) {
+            if (strcmp(flag, "-v") == 0) { // if the user types STAT -v, pass in 1, used as a flag for verbose
                 display_status(max_size, 1);
             }
             else {
-                display_status(max_size, 0);
+                display_status(max_size, 0); // otherwise pass in 0, user did not type verbose
             }
         }
         else if (strcmp(command_type, "SIM") == 0) {
@@ -79,12 +79,12 @@ int main(int argc, char *argv[]) {
             }
         }
         else {
-            printf("Error: unknown command.\n");
+            printf("Error: unknown command.\n"); // if the user typed something unknown, print an error, but continue
         }
     }
 
-    free_all_memory(head); 
-    return 0;
+    free_all_memory(head); // when done, clean up all memory (delete the entire list)
+    return 0; // program completed successfully
 }
 
 void initialize_memory(int size) {
@@ -148,11 +148,11 @@ void release_memory(char *process) { // function just to delete a single item fr
 }
 
 void allocate_in_hole(MemoryBlock* hole, char* process, int size) {
-    if (hole->size == size) {
+    if (hole->size == size) { // if the hole fits, make the hole allocated, and copy the data to the new hole
         hole->is_allocated = 1;
         strcpy(hole->process, process);
     }
-    else {
+    else { // otherwise it doesn't fit perfectly, so store the process, but create a new hole with the remaining info
         hole->is_allocated = 1;
         strcpy(hole->process, process);
 
@@ -219,21 +219,21 @@ void compact_memory(int max_size) {
     }
     
     if (total_allocated < max_size) {
-        MemoryBlock* free_block = (MemoryBlock*)malloc(sizeof(MemoryBlock));
+        MemoryBlock* free_block = (MemoryBlock*)malloc(sizeof(MemoryBlock)); // creating a new node for the hole
         if (free_block == NULL) {
             fprintf(stderr, "Error: Unable to allocate memory for free block\n");
             exit(1);
         }
         
-        free_block->start = current_address;
-        free_block->size = max_size - total_allocated;
-        free_block->is_allocated = 0;
+        free_block->start = current_address; // hole starts right after the last allocated process 
+        free_block->size = max_size - total_allocated; // the hole size is the remaining space
+        free_block->is_allocated = 0; // default initialization
         free_block->process[0] = '\0';
         free_block->next = NULL;
         
-        if (new_head == NULL) {
+        if (new_head == NULL) { // if all the memory was free, the new head is the free block 
             new_head = free_block;
-        } else {
+        } else { // otherwise  add the hole after the allocated block
             new_tail->next = free_block;
         }
     }
@@ -293,7 +293,7 @@ MemoryBlock* find_worst_fit(int size) {
     return worst;
 }
 
-void display_status(int max_size, int verbose) {
+void display_status(int max_size, int verbose) { // self explanitory, printing the memory block either verbose or not
     MemoryBlock* current = head;
     
     size_t total_allocated = 0;
@@ -358,7 +358,7 @@ void display_status(int max_size, int verbose) {
     }
 }
 
-void visualize_memory(int max_size) {
+void visualize_memory(int max_size) { // if the user used the verbose flag call this, draw a simulated memory block of size 50
     char visual[51];
     visual[50] = '\0';
     
@@ -372,7 +372,7 @@ void visualize_memory(int max_size) {
         int position_address = (int)(i * bytes_per_char);
         
         MemoryBlock* current = head;
-        while (current != NULL) {
+        while (current != NULL) { // iterate through the list and either draw it assigned (#) or empty (.)
             if (position_address >= current->start && 
                 position_address < current->start + current->size) {
                 
@@ -396,7 +396,7 @@ void visualize_memory(int max_size) {
     printf("^%d\n", max_size);
 }
 
-void simulate_from_file(char *filename, int max_size) {
+void simulate_from_file(char *filename, int max_size) { // very similar to main function, but this time automated through a file
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
         fprintf(stderr, "Error: Unable to open file '%s'\n", filename);
@@ -470,7 +470,7 @@ void simulate_from_file(char *filename, int max_size) {
     printf("Simulation complete\n");
 }
 
-MemoryBlock* create_node(int start, int size, int is_allocated, const char* process) {
+MemoryBlock* create_node(int start, int size, int is_allocated, const char* process) { // simple function to create a node in a linked list
     MemoryBlock* new_node = (MemoryBlock*)malloc(sizeof(MemoryBlock));
 
     if (new_node == NULL) {
@@ -495,7 +495,7 @@ MemoryBlock* create_node(int start, int size, int is_allocated, const char* proc
     return new_node;
 }
 
-MemoryBlock* find_process(const char *process) {
+MemoryBlock* find_process(const char *process) { // finding a process at an index, return the index, if not found, return null
     MemoryBlock* current = head;
     while (current != NULL) {
         if (current->is_allocated && strcmp(process, current->process) == 0) {
@@ -506,7 +506,7 @@ MemoryBlock* find_process(const char *process) {
     return NULL;
 }
 
-int process_exists(char *process) {
+int process_exists(char *process) { // check if a process exists, if does return 1, if nont return 0
     MemoryBlock* current = head;
     while (current != NULL) {
         if (current->is_allocated && strcmp(current->process, process) == 0) {
@@ -517,7 +517,7 @@ int process_exists(char *process) {
     return 0;
 }
 
-void merge_adjacent_holes(MemoryBlock* block) {
+void merge_adjacent_holes(MemoryBlock* block) { // makes sure there are no tiny holes, merges small holes next to processes into large holes
     if (block->next != NULL && !block->next->is_allocated) {
         MemoryBlock* next_block = block->next;
         block->size += next_block->size;
@@ -540,12 +540,12 @@ void merge_adjacent_holes(MemoryBlock* block) {
     }
 }
 
-void insert_block_after(MemoryBlock *current, MemoryBlock *new_block) {
+void insert_block_after(MemoryBlock *current, MemoryBlock *new_block) { // insertion into a linked list
     new_block->next = current->next;
     current->next = new_block;
 }
 
-int count_holes() {
+int count_holes() { // counting the number of holes in the memory block, used for averages
     int count = 0;
     MemoryBlock* current = head;
     while (current != NULL) {
@@ -557,7 +557,7 @@ int count_holes() {
     return count;
 }
 
-void free_all_memory(MemoryBlock* head) {
+void free_all_memory(MemoryBlock* head) { // complete deletion of entire list, used for cleanup
     MemoryBlock* current = head;
     MemoryBlock* next;
 
