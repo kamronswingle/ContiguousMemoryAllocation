@@ -88,6 +88,10 @@ gcc allocator.c -o allocator
 
 ./allocator 1048576
 
+and while inside:
+
+SIM <nameOfTextFile.ext>
+
 ## Sample Output:
 
 allocator>SIM test.txt
