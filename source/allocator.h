@@ -1,3 +1,13 @@
+/*
+    Name: Kamron Swingle
+    Course: CPSC 380 - Operating Systems
+    Email: swingle@chapman.edu
+    Assignment: Assignment 5 - Contigious Memory Allicator
+    File: allocator.h
+    School: Chapman University
+*/
+
+
 #ifndef ALLOCATOR_H
 #define ALLOCATOR_H
 
