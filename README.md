@@ -153,7 +153,8 @@ External fragmentation: 0.0% (1-largest free block/total free memory)
 Average hole size: 779.86 KB
 
 \[\#\#\#\#\#\#\#\#\#\#\#\#\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\]
-^0                                                ^1048576
+
+^0                                                                                                     ^1048576
 
 allocator> X
 Exiting simulation
