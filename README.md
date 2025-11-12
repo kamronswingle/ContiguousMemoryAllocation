@@ -1,6 +1,8 @@
-Help recieved from freind outside of school. Name: Ian McQuerrey
+# README File #
 
-Sources:
+**Help recieved from freind outside of school. Name: Ian McQuerrey**
+
+**Sources:**
 
 Memory Managment in OS:
 
@@ -66,6 +68,10 @@ Copying a linked list to another:
 
 https://stackoverflow.com/questions/4984071/how-do-you-copy-a-linked-list-into-another-list
 
-Compilation Instructions:
+**Compilation Instructions:**
 
 gcc allocator.c memory_operations.c allocator_strategies.c display.c simulation.c utilities.c -o allocator
+
+**Sample Usage:**
+
+./allocator 1048576
