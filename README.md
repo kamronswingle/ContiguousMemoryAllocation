@@ -82,7 +82,7 @@ https://stackoverflow.com/questions/4984071/how-do-you-copy-a-linked-list-into-a
 
 ## Compilation Instructions:
 
-gcc allocator.c memory_operations.c allocator_strategies.c display.c simulation.c utilities.c -o allocator
+gcc allocator.c -o allocator
 
 ## Sample Usage:
 
