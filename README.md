@@ -87,3 +87,76 @@ gcc allocator.c -o allocator
 ## Sample Usage:
 
 ./allocator 1048576
+
+## Sample Output:
+
+allocator>SIM test.txt
+Starting simulation from file: test.txt
+
+allocator> RQ P0 100000 F
+
+allocator> RQ P1 200000 F
+
+allocator> RQ P2 150000 F
+
+allocator> STAT
+Allocated memory:
+Process P0: Start = 0.00 KB, End = 97.66 KB, Size = 97.66 KB
+Process P1: Start = 97.66 KB, End = 292.97 KB, Size = 195.31 KB
+Process P2: Start = 292.97 KB, End = 439.45 KB, Size = 146.48 KB
+
+Free memory:
+Hole 1: Start = 439.45 KB, End = 1024.00 KB, Size = 584.55 KB
+
+Summary:
+Total allocated: 439.45 KB
+Total free: 584.55 KB
+Largest hole: 584.55 KB
+External fragmentation: 0.0% (1-largest free block/total free memory)
+Average hole size: 584.55 KB
+
+allocator> RL P1
+Successfully released memory for process P1
+
+allocator> STAT
+Allocated memory:
+Process P0: Start = 0.00 KB, End = 97.66 KB, Size = 97.66 KB
+Process P2: Start = 292.97 KB, End = 439.45 KB, Size = 146.48 KB
+
+Free memory:
+Hole 1: Start = 97.66 KB, End = 292.97 KB, Size = 195.31 KB
+Hole 2: Start = 439.45 KB, End = 1024.00 KB, Size = 584.55 KB
+
+Summary:
+Total allocated: 244.14 KB
+Total free: 779.86 KB
+Largest hole: 584.55 KB
+External fragmentation: 25.0% (1-largest free block/total free memory)
+Average hole size: 389.93 KB
+
+allocator> C
+Memory compacted successfully
+
+allocator> STAT -v
+Allocated memory:
+Process P0: Start = 0.00 KB, End = 97.66 KB, Size = 97.66 KB
+Process P2: Start = 97.66 KB, End = 244.14 KB, Size = 146.48 KB
+
+Free memory:
+Hole 1: Start = 244.14 KB, End = 1024.00 KB, Size = 779.86 KB
+
+Summary:
+Total allocated: 244.14 KB
+Total free: 779.86 KB
+Largest hole: 779.86 KB
+External fragmentation: 0.0% (1-largest free block/total free memory)
+Average hole size: 779.86 KB
+
+\[\#\#\#\#\#\#\#\#\#\#\#\#\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\]
+^0                                                ^1048576
+
+allocator> X
+Exiting simulation
+Simulation complete
+
+*Note: If you are reading this in plaintext, ignore the backslashes in the sample output, it is just for .md formatting on github*
