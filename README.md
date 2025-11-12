@@ -6,13 +6,13 @@ Course: CPSC 380 - Operating Systems
 
 Email: swingle@chapman.edu
 
-Assignment: Assignment 4 - CPU Scheduling Simulator
+Assignment: Assignment 5 - Contiguous Memory Allicator
 
-Required Files: schedsim.c, processes.csv
+Required Files: allocator.c allicator.h
 
 School: Chapman University
 
-**Help recieved from freind outside of school. Name: Ian McQuerrey**
+*Help recieved from freind outside of school. Name: Ian McQuerrey*
 
 ## Sources:
 

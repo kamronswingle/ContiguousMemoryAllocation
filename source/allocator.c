@@ -1,10 +1,19 @@
+/*
+    Name: Kamron Swingle
+    Course: CPSC 380 - Operating Systems
+    Email: swingle@chapman.edu
+    Assignment: Assignment 5 - Contigious Memory Allicator
+    File: allocator.c
+    School: Chapman University
+*/
+
 #include "allocator.h"
 
-MemoryBlock *head = NULL;
-int total_memory = 0;
+MemoryBlock *head = NULL; // globally defining the head of the linked list, as there will only be 1
+int total_memory = 0; // total memory allocated to find averages
 
 int main(int argc, char *argv[]) {
-    if (argc != 2) {
+    if (argc != 2) { // making sure user supplied enough arguments
         fprintf(stderr, "Error: Usage: %s <memory_size>\n", argv[0]);
         return 1;
     }
@@ -12,8 +21,8 @@ int main(int argc, char *argv[]) {
     int max_size = atoi(argv[1]); // define the max size from argument 1
     initialize_memory(max_size); // initializing the memory (setting up the linked list)
     
-    char command[100];
-    char command_type[10];
+    char command[100]; // entire command for parsing
+    char command_type[10]; // type of command passed (e.g. F, W, B etc.)
 
     while (1) { // main loop for CLI
         printf("allocator>");
@@ -94,6 +103,7 @@ void initialize_memory(int size) {
     if (head == NULL) {
         fprintf(stderr, "Error creating memory block.\n");
         exit(1);
+        // no need to free memory here, because head is null anyways
     }
 
     // default initial values, process is set to null terminator, as we treat it as an empty string
@@ -124,7 +134,7 @@ void request_memory(char *process, int size, char strategy) {
     }
 
     if (chosen_hole == NULL) {
-        printf("Error: insufficient memory\n");
+        printf("Error: insufficient memory\n"); // somewhat un-needed, but makes sure the hole can be found
         return;
     }
 
@@ -171,7 +181,7 @@ void compact_memory(int max_size) {
             has_allocated = 1;
             break;
         }
-        current = current->next;
+        current = current->next; // iterating through the linked list
     }
 
     if (!has_allocated) { // quitting if nothing to compact
@@ -180,9 +190,9 @@ void compact_memory(int max_size) {
     }
 
     // Assigning old linked list head and new one that will be copied to
-    MemoryBlock* old_head = head;
-    MemoryBlock* new_head = NULL;
-    MemoryBlock* new_tail = NULL;
+    MemoryBlock* old_head = head; // assigning the old head 
+    MemoryBlock* new_head = NULL; // defining a new head, will be assigned at the end 
+    MemoryBlock* new_tail = NULL; // tail to help iterate through the list and find the previous block
     
     int current_address = 0;
     int total_allocated = 0;
@@ -192,8 +202,9 @@ void compact_memory(int max_size) {
         if (current->is_allocated) {
             MemoryBlock* new_block = (MemoryBlock*)malloc(sizeof(MemoryBlock)); // creating a new list
             if (new_block == NULL) {
-                fprintf(stderr, "Error: Unable to allocate memory during compaction\n");
-                exit(1);
+                fprintf(stderr, "Error: Unable to allocate memory during compaction\n"); // make sure we can create a new list, check if it was made
+                free_all_memory(old_head);
+                exit(1); // if it fails we have to completely exit the program
             }
            
             // copying over everything from old list
@@ -222,6 +233,7 @@ void compact_memory(int max_size) {
         MemoryBlock* free_block = (MemoryBlock*)malloc(sizeof(MemoryBlock)); // creating a new node for the hole
         if (free_block == NULL) {
             fprintf(stderr, "Error: Unable to allocate memory for free block\n");
+            free_all_memory(head);
             exit(1);
         }
         
@@ -249,8 +261,6 @@ void compact_memory(int max_size) {
     
     printf("Memory compacted successfully\n");
 }
-
-#include "allocator.h"
 
 MemoryBlock* find_first_fit(int size) {
     MemoryBlock* current = head;
@@ -475,6 +485,7 @@ MemoryBlock* create_node(int start, int size, int is_allocated, const char* proc
 
     if (new_node == NULL) {
         fprintf(stderr, "Error creating new memory block.\n");
+        free_all_memory(head);
         exit(1);
     }
 
@@ -567,3 +578,4 @@ void free_all_memory(MemoryBlock* head) { // complete deletion of entire list, u
         current = next;
     }
 }
+
