@@ -19,6 +19,17 @@ int main(int argc, char *argv[]) {
     }
     
     int max_size = atoi(argv[1]); // define the max size from argument 1
+
+    if (max_size <= 0) { // making sure the memory size is valid
+        fprintf(stderr, "Error: memory_size must be a positive integer.\n");
+        return 1;
+    }
+
+    if (max_size > 1073741824) { // making sure the memory size is not too large (this is 1 GB)
+        fprintf(stderr, "Error: memory_size must not exceed 1,073,741,824 bytes (1 GB).\n");
+        return 1;
+    }
+
     initialize_memory(max_size); // initializing the memory (setting up the linked list)
     
     char command[100]; // entire command for parsing
